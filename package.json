@@ -1,0 +1,17 @@
+{
+  "name": "rspotd",
+  "scripts": {
+    "dev": "wrangler dev src/index.ts",
+    "deploy": "wrangler deploy --minify src/index.ts"
+  },
+  "dependencies": {
+    "@atproto/api": "^0.13.6",
+    "dotenv": "^16.4.5",
+    "hono": "^4.5.11",
+    "meilisearch": "^0.42.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240529.0",
+    "wrangler": "^3.57.2"
+  }
+}

@@ -1,0 +1,18 @@
+name: Deploy Random Sign Of The Day Worker
+on:
+  push:
+    branches:
+      - main
+jobs:
+    deploy:
+      environment: Production
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+          with:
+            fetch-depth: '0'
+        - uses: oven-sh/setup-bun@v1
+        - uses: cloudflare/wrangler-action@v3
+          with:
+            apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+            command: deploy --minify src/index.ts

@@ -1,0 +1,21 @@
+name = "rspotd"
+compatibility_date = "2024-09-05"
+
+[[kv_namespaces]]
+binding = "signs"
+id = "032a57eafe57449eb913b66b37af4801"
+preview_id = "032a57eafe57449eb913b66b37af4801"
+
+[[r2_buckets]]
+binding = 'signBucket'
+bucket_name = 'sign'
+preview_bucket_name = 'sign'
+
+
+[triggers]
+crons = [ "0 0 * * *" ] # Every day at midnight UTC
+
+[vars]
+BLUESKY_HANDLE = "roadsign.pictures"
+SEARCH_HOST = "https://search.roadsign.pictures"
+SEARCH_INDEX = "signs"
