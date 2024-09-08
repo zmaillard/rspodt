@@ -16,14 +16,24 @@ interface AllSigns {
   imageCount: number;
   images: string[];
 }
- 
+
+interface AdminAreaResult {
+  name: string;
+  slug: string;
+}
+interface SignSearchResult {
+  title: string;
+  description: string;
+  place?: AdminAreaResult;
+  state: AdminAreaResult;
+  country: AdminAreaResult;
+}
 
 const app = new Hono();
 
 app.get("/", async (c) => {
   return c.redirect("https://roadsign.pictures", 302);
 });
-
 
 export default {
   fetch: app.fetch,
@@ -32,6 +42,14 @@ export default {
     env: Env,
     ctx: ExecutionContext,
   ) => {
+    const buildDesc = (item: SignSearchResult) => {
+      let base = `${item.state.name}, ${item.country.name}`;
+      if (item.place) {
+        return `${item.place.name}, ${base}`;
+      }
+      return base;
+    };
+
     const sendRandomSkeet = async (env: Env) => {
       let signsRawJson = await env.signs.get("quality");
       let allSigns = JSON.parse(signsRawJson ?? "{}") as AllSigns;
@@ -54,7 +72,7 @@ export default {
       });
 
       const index = await searchClient.getIndex(env.SEARCH_INDEX);
-      const item = await index.getDocument(randomSign);
+      const item = await index.getDocument<SignSearchResult>(randomSign);
 
       // If item is not found in index - just exit
       if (item == null) {
@@ -62,7 +80,6 @@ export default {
       }
 
       const title = item.title;
-      const desc = item.description;
 
       const titleRt = new RichText({ text: title });
 
@@ -80,7 +97,7 @@ export default {
       const { data } = await agent.uploadBlob(b);
 
       await agent.post({
-        text: `${title}\n${desc}`,
+        text: `${title}\n${buildDesc(item)}`,
         facets: [
           {
             index: {
